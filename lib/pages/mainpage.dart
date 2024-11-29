@@ -1,6 +1,7 @@
 import 'package:fange/pages/e621page.dart';
 import 'package:fange/preferences/preferences.dart';
 import 'package:fange/themes/e621theme.dart';
+import 'package:fange/widgets/buttons/boorusitetile.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -9,14 +10,13 @@ class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.onPageChange});
 
   @override
-  State<MainPage> createState() => _MainPageState(onPageChange);
+  State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  final Function(Widget) onPageChange;
   Widget? thisPage;
 
-_MainPageState(this.onPageChange);
+_MainPageState();
 
   @override
   Widget build(BuildContext context) {
@@ -26,54 +26,8 @@ _MainPageState(this.onPageChange);
         padding: const EdgeInsets.all(20),
         child: Wrap(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: InkWell( 
-                onTap: changeToE621Page, 
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    color: E621Theme.appBarColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(20))
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'E621',
-                      style: TextStyle(
-                        color: Colors.yellow,
-                        fontSize: 20
-                      ),
-                    ),
-                  ),
-                )
-              ),
-            ),
-            /*Container(
-              padding: const EdgeInsets.all(10),
-              child: InkWell( 
-                onTap: changeToE621Page, 
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    color: E621Theme.appBarColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(20))
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'E926',
-                      style: TextStyle(
-                        color: Colors.yellow,
-                        fontSize: 20
-                      ),
-                    ),
-                  ),
-                )
-              ),
-            ),*/
+            BooruSiteTile(changeToPage: changeToE621Page, tileBackground: E621Theme.appBarColor, urlOfIcon: 'assets/images/e621.net.png'),
+            BooruSiteTile(changeToPage: changeToSafeBooruPage, tileBackground: E621Theme.appBarColor, urlOfIcon: 'assets/images/safebooru.org.png'),
           ],
         ),
       ),
@@ -88,6 +42,10 @@ _MainPageState(this.onPageChange);
     String apiKey = await Preferences.getE621APIKey() ?? '';
     String username = await Preferences.getE621Username() ?? '';
 
-    onPageChange(E621Page(apiKey: apiKey, username: username, onCancel: () => { onPageChange(getMainPage())}, onImageSelected: onPageChange, ));
+    widget.onPageChange(E621Page(apiKey: apiKey, username: username, onCancel: () => { widget.onPageChange(getMainPage())}, onImageSelected: widget.onPageChange, ));
+  }
+
+  void changeToSafeBooruPage() {
+
   }
 }

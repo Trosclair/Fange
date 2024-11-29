@@ -18,12 +18,10 @@ class E621Page extends StatefulWidget {
   const E621Page({super.key, required this.apiKey, required this.username, required this.onCancel, required this.onImageSelected});
 
   @override
-  State<E621Page> createState() => _E621PageState(apiKey, username, onCancel, onImageSelected);
+  State<E621Page> createState() => _E621PageState();
 }
 
 class _E621PageState extends State<E621Page> {
-  final VoidCallback onCancel;
-  final Function(Widget) onImageSelected;
 
   E621Client? client;
   int pageNumber = 1;
@@ -36,16 +34,22 @@ class _E621PageState extends State<E621Page> {
   String scrollingError = '';
   Widget? gallery;
 
-  List<Widget> postWidgets = <Widget>[]; 
+  bool firstRun = true;
 
-  _E621PageState(String? apiKey, String? username, this.onCancel, this.onImageSelected) {
-    if (username != null && apiKey != null) {
-      client = E621Client(host: Uri.parse('https://e621.net'), login: username, apiKey: apiKey, userAgent: 'Fange/1.0 (by deadi9 on e621)');
-    }
-  }
+  List<Widget> postWidgets = <Widget>[]; 
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    if (firstRun) { // run once 
+      String? username = widget.username;
+      String? apiKey = widget.apiKey;
+
+      if (username != null && apiKey != null) {
+        client = E621Client(host: Uri.parse('https://e621.net'), login: username, apiKey: apiKey, userAgent: 'Fange/1.0 (by deadi9 on e621)');
+      }
+      firstRun = false;
+    }
+
     if (client != null) {
       return gallery ??= getGallery();
     }
@@ -66,7 +70,7 @@ class _E621PageState extends State<E621Page> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    TextButton(onPressed: () => onCancel, style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.yellow)), child: const Text('Cancel')),
+                    TextButton(onPressed: () => widget.onCancel, style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.yellow)), child: const Text('Cancel')),
                     const SizedBox(width: 10),
                     TextButton(onPressed: onLogin, style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.yellow)), child: const Text('Login'))
                   ],
@@ -82,7 +86,7 @@ class _E621PageState extends State<E621Page> {
   Widget getGallery() {
     return Scaffold(
       backgroundColor: E621Theme.appBarColor,
-      appBar: E621AppBar(onHomePressed: onCancel, textController: searchTextController, onSearchPressed: onSearchPressed),
+      appBar: E621AppBar(onHomePressed: widget.onCancel, textController: searchTextController, onSearchPressed: onSearchPressed),
       endDrawer: E621Drawer(onLogoutPressed: onLogout),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -132,7 +136,7 @@ class _E621PageState extends State<E621Page> {
   }
 
   Widget postToWidget(Post x) {
-    return PostPreviewButton(post: x, onClicked: onImageSelected, backToGallary: () => { onImageSelected(gallery ??= getGallery()) },);
+    return PostPreviewButton(post: x, onClicked: widget.onImageSelected, backToGallary: () => { widget.onImageSelected(gallery ??= getGallery()) },);
   }
 
   void onLogout() {

@@ -1,4 +1,4 @@
-import 'package:fange/themes/e926theme.dart';
+import 'package:fange/themes/e621theme.dart';
 import 'package:fange/widgets/textfields/boorusearchtextfield.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ class E621AppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: E926Theme.appBarColor,
+      backgroundColor: E621Theme.appBarColor,
       elevation: 1.0,
       centerTitle: true,
       leading: IconButton(

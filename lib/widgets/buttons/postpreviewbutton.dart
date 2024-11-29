@@ -1,5 +1,6 @@
 import 'package:e621/e621.dart';
-import 'package:fange/themes/e621theme.dart';
+import 'package:fange/pages/e621imagepage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PostPreviewButton extends StatelessWidget {
@@ -14,11 +15,34 @@ class PostPreviewButton extends StatelessWidget {
     String? url = post.preview.url?.toString() ?? post.sample.url?.toString();
     if (url != null) {
       return SizedBox(
+        height: 145,
         width: 120,
-        height: 120,
-        child: IconButton(
-          onPressed: () => createImagePage(context),
-          icon: FadeInImage.assetNetwork(placeholder: 'assets/gifs/loading.gif', image: url),
+        child: Column(
+          children: [ 
+            SizedBox(
+              width: 120,
+              height: 120,
+              child: IconButton(
+                onPressed: () => createImagePage(context),
+                icon: FadeInImage.assetNetwork(placeholder: 'assets/gifs/loading.gif', image: url),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.arrow_upward_rounded, color: Colors.green, size: 14),
+                Text(post.score.total.toString(), style: const TextStyle(color: Colors.green, fontSize: 14)),
+                const SizedBox(width: 3),
+                const Icon(CupertinoIcons.heart_fill, color: Colors.red, size: 14),
+                Text(post.favCount.toString(), style: const TextStyle(color: Colors.red, fontSize: 14)),
+                const SizedBox(width: 3),
+                const Icon(CupertinoIcons.bubble_left, color: Colors.white, size: 14),
+                Text(post.commentCount.toString(), style: const TextStyle(color: Colors.white, fontSize: 14)),
+                const SizedBox(width: 5),
+                Text(post.rating.toString().toUpperCase(), style: const TextStyle(color: Colors.green, fontSize: 14)),
+              ],
+            )
+          ]
         ),
       );
     }
@@ -27,37 +51,6 @@ class PostPreviewButton extends StatelessWidget {
   }
 
   void createImagePage(BuildContext context) {
-    String? url = post.file.url?.toString();
-    if (url != null) {
-      Widget page = Scaffold(
-        backgroundColor: E621Theme.appBarColor,
-        appBar: AppBar(
-          backgroundColor: E621Theme.appBarColor, 
-          leading: IconButton(
-            onPressed: backToGallary, 
-            icon: const Icon(
-              Icons.arrow_back, 
-              color: Colors.white
-            )
-          ),
-        ),
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Container(
-              constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 20),
-              child: Column(
-                children: [
-                  FadeInImage.assetNetwork(placeholder: 'assets/gifs/loading.gif', image: url),
-                  Text(post.description, style: const TextStyle(color: Colors.white,))
-                ],
-              ),
-            ),
-          ),
-        )
-      );
-      onClicked(page);
-    }
+    onClicked(E621ImagePage(post: post, backToGallary: backToGallary));
   }
 }
