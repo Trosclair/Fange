@@ -108,7 +108,7 @@ class _E621GalleryPageState extends State<E621GalleryPage> {
       }
 
       for (Post x in posts.where((y) => y.preview.url != null)) {
-        tempPostWidgets.add(PostPreviewButton(post: x));
+        tempPostWidgets.add(PostPreviewButton(post: x, client: widget.client,));
       }
     }
 

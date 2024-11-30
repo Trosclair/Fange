@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:e621/e621.dart';
 import 'package:fange/pages/e621imagepage.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,8 +7,9 @@ import 'package:http/http.dart' as http;
 
 class PostPreviewButton extends StatelessWidget {
   final Post post;
+  final E621Client client;
 
-  const PostPreviewButton({super.key, required this.post});
+  const PostPreviewButton({super.key, required this.post, required this.client});
 
   Widget onImageError(BuildContext context, Object error, StackTrace? stackTrace) {
     return const Text('IMAGE NOT FOUND', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, backgroundColor: Colors.black));
@@ -20,7 +22,7 @@ class PostPreviewButton extends StatelessWidget {
       List<Widget> stackWidgets = [
         Center(
           child: IconButton(
-            onPressed: () => createImagePage(context),
+            onPressed: () => onPreviewClicked(context),
             icon: FadeInImage.assetNetwork(placeholder: 'assets/gifs/loading.gif', image: url, imageErrorBuilder: onImageError),
           ),
         ),
@@ -103,16 +105,22 @@ class PostPreviewButton extends StatelessWidget {
     return gifOrWebm;
   }
 
-  void createImagePage(BuildContext context) async {
+  void onPreviewClicked(BuildContext context) async {
+    Widget img = const Placeholder();
     Uri? url = post.file.url;
+    try {
+      if (url != null) {
+        Future.delayed(const Duration(seconds: 1));
 
-    if (url != null) {
-      http.Response resp = await http.get(url);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post, mediaBytes: resp.bodyBytes)));
+        http.Response resp = await http.get(url);
+        img = Image(image: Image.memory(resp.bodyBytes).image);
+
+        
+      }
     }
-    else {
-      /// Notify the user that their image is not home :3
-      toString();
+    on Exception catch (_) {
+      img = const Text('Image failed to Load...', style: TextStyle(color: Colors.red));
     }
+    Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post, img: img,)));
   }
 }

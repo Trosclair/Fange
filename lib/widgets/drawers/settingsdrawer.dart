@@ -1,4 +1,4 @@
-import 'package:fange/Themes/e926theme.dart';
+import 'package:fange/themes/e621theme.dart';
 import 'package:flutter/material.dart';
 
 class SettingsDrawer extends StatelessWidget {
@@ -7,7 +7,7 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: E926Theme.appBarColor,
+      backgroundColor: E621Theme.appBarColor,
     );
   }
 }
