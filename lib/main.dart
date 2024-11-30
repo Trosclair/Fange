@@ -1,4 +1,4 @@
-import 'package:fange/pages/home.dart';
+import 'package:fange/pages/homepage.dart';
 import 'package:flutter/material.dart';
 
 void main() {

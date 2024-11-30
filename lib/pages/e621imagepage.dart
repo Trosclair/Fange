@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 class E621ImagePage extends StatelessWidget {
   final Post post;
-  final VoidCallback backToGallary;
 
-  const E621ImagePage({super.key, required this.post, required this.backToGallary});
+  const E621ImagePage({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class E621ImagePage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: E621Theme.appBarColor, 
           leading: IconButton(
-            onPressed: backToGallary, 
+            onPressed: () => Navigator.pop(context), 
             icon: const Icon(
               Icons.arrow_back, 
               color: Colors.white

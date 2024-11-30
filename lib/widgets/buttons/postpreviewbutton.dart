@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 
 class PostPreviewButton extends StatelessWidget {
   final Post post;
-  final Function(Widget post) onClicked;
-  final VoidCallback backToGallary;
 
-  const PostPreviewButton({super.key, required this.post, required this.onClicked, required this.backToGallary});
+  const PostPreviewButton({super.key, required this.post});
 
   Widget onImageError(BuildContext context, Object error, StackTrace? stackTrace) {
     return const Text('IMAGE NOT FOUND', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, backgroundColor: Colors.black));
@@ -105,6 +103,6 @@ class PostPreviewButton extends StatelessWidget {
   }
 
   void createImagePage(BuildContext context) {
-    onClicked(E621ImagePage(post: post, backToGallary: backToGallary));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post)));
   }
 }
