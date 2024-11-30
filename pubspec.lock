@@ -52,10 +52,9 @@ packages:
   e621:
     dependency: "direct main"
     description:
-      name: e621
-      sha256: "71630639fbb9874af326159b490869f9a7ad6fff704b7660ad6ec249ea62a721"
-      url: "https://pub.dev"
-    source: hosted
+      path: "submodules/e621"
+      relative: true
+    source: path
     version: "1.1.0"
   fake_async:
     dependency: transitive

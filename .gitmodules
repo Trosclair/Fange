@@ -1,0 +1,3 @@
+[submodule "submodules/e621"]
+	path = submodules/e621
+	url = https://github.com/Trosclair/e621.git
