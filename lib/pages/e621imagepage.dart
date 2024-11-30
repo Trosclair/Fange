@@ -34,7 +34,7 @@ class E621ImagePage extends StatelessWidget {
               constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 20),
               child: Column(
                 children: [
-                  FadeInImage.assetNetwork(placeholder: 'assets/gifs/loading.gif', image: url),
+                  FadeInImage.assetNetwork(placeholder: 'assets/gifs/loading.gif', image: url, imageErrorBuilder: onImageError,),
                   Text(post.description, style: const TextStyle(color: Colors.white,))
                 ],
               ),
@@ -44,5 +44,9 @@ class E621ImagePage extends StatelessWidget {
       );
     }
     return page;
+  }
+
+  Widget onImageError(BuildContext context, Object error, StackTrace? stackTrace) {
+    return const Text('IMAGE NOT FOUND', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, backgroundColor: Colors.black));
   }
 }

@@ -32,8 +32,9 @@ class _E621PageState extends State<E621Page> {
 
   String loginMessage = '';
   String scrollingError = '';
-  Widget? gallery;
-
+  ScrollController? scrollController;
+  bool isLoadingPreviews = false;
+  bool hasRanOutOfPosts = false;
   bool firstRun = true;
 
   List<Widget> postWidgets = <Widget>[]; 
@@ -51,7 +52,22 @@ class _E621PageState extends State<E621Page> {
     }
 
     if (client != null) {
-      return gallery ??= getGallery();
+      scrollController = ScrollController();
+      scrollController!.addListener(onScroll);
+      return Scaffold(
+        backgroundColor: E621Theme.appBarColor,
+        appBar: E621AppBar(onHomePressed: widget.onCancel, textController: searchTextController, onSearchPressed: onSearchPressed),
+        endDrawer: E621Drawer(onLogoutPressed: onLogout),
+        body: SingleChildScrollView(
+          controller: scrollController,
+          physics: const ClampingScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          
+          child: Wrap(
+            children: postWidgets,
+          ),
+        ),
+      );
     }
     else {
       return Scaffold(
@@ -89,7 +105,10 @@ class _E621PageState extends State<E621Page> {
       appBar: E621AppBar(onHomePressed: widget.onCancel, textController: searchTextController, onSearchPressed: onSearchPressed),
       endDrawer: E621Drawer(onLogoutPressed: onLogout),
       body: SingleChildScrollView(
+        controller: scrollController,
+        physics: const ClampingScrollPhysics(),
         scrollDirection: Axis.vertical,
+        
         child: Wrap(
           children: postWidgets,
         ),
@@ -97,9 +116,41 @@ class _E621PageState extends State<E621Page> {
     );
   }
 
+  void onScroll() async {
+    if (scrollController != null) {
+      if (scrollController!.offset >= (scrollController!.position.maxScrollExtent - 1000) && !scrollController!.position.outOfRange) {
+        if (!isLoadingPreviews) {
+
+          isLoadingPreviews = true;
+          if (!hasRanOutOfPosts) {
+            pageNumber++;
+
+            List<Widget> tempPostWidgets = await getPostPreviews();
+
+            hasRanOutOfPosts = tempPostWidgets.isEmpty;
+
+            setState(() {
+              postWidgets.addAll(tempPostWidgets);
+            });
+          }
+          isLoadingPreviews = false;
+        }
+      }
+    }
+  }
+
   void onSearchPressed() async {
     postWidgets.clear();
-    gallery = null;
+    
+    List<Widget> tempPostWidgets = await getPostPreviews();
+
+    setState(() {
+      postWidgets.addAll(tempPostWidgets);
+    });
+  }
+
+  Future<List<Widget>> getPostPreviews() async {
+    List<Widget> tempPostWidgets = [];
 
     if (searchTextController.text.isNotEmpty) {
       List<String> tags = searchTextController.text.split(' ');
@@ -109,7 +160,7 @@ class _E621PageState extends State<E621Page> {
         posts = await client?.posts.list(limit: 320, tags: tags, page: pageNumber);
       } on ClientException catch (e) {
         scrollingError = e.message;
-        return;
+        return [];
       } on E621Exception catch (e) {
         setState(() {
           switch (e.statusCode) {
@@ -119,24 +170,23 @@ class _E621PageState extends State<E621Page> {
               scrollingError = '${e.message} Error Code: ${e.statusCode}';
           }
         });
-        return;
+        return [];
       }
 
-      List<Widget> tempPostWidgets = <Widget>[];
       if (posts != null) { /// Parallelize this later??
+        Widget page = E621Page(apiKey: widget.apiKey, username: widget.username, onCancel: widget.onCancel, onImageSelected: widget.onImageSelected);
         for (Post x in posts.where((y) => y.preview.url != null)) {
-          tempPostWidgets.add(postToWidget(x));
+          tempPostWidgets.add(postToWidget(x, page));
         }
       }
 
-      setState(() {
-        postWidgets.addAll(tempPostWidgets);
-      });
     }
+
+    return tempPostWidgets;
   }
 
-  Widget postToWidget(Post x) {
-    return PostPreviewButton(post: x, onClicked: widget.onImageSelected, backToGallary: () => { widget.onImageSelected(gallery ??= getGallery()) },);
+  Widget postToWidget(Post x, Widget page) {
+    return PostPreviewButton(post: x, onClicked: widget.onImageSelected, backToGallary: () => { widget.onImageSelected(page) },);
   }
 
   void onLogout() {

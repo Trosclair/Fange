@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
   final Function(Widget) onPageChange;
+  final Function(bool, dynamic) onBackButtonPressed;
 
-  const MainPage({super.key, required this.onPageChange});
+  const MainPage({super.key, required this.onPageChange, required this.onBackButtonPressed});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -20,18 +21,21 @@ _MainPageState();
 
   @override
   Widget build(BuildContext context) {
-      thisPage = Scaffold(
-      backgroundColor: const Color.fromARGB(255, 83, 20, 192),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Wrap(
-          children: [
-            BooruSiteTile(changeToPage: changeToE621Page, tileBackground: E621Theme.appBarColor, urlOfIcon: 'assets/images/e621.net.png'),
-            BooruSiteTile(changeToPage: changeToSafeBooruPage, tileBackground: E621Theme.appBarColor, urlOfIcon: 'assets/images/safebooru.org.png'),
-          ],
+      thisPage = PopScope(
+        onPopInvokedWithResult: widget.onBackButtonPressed,
+        child: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 83, 20, 192),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: Wrap(
+            children: [
+              BooruSiteTile(changeToPage: changeToE621Page, tileBackground: E621Theme.appBarColor, urlOfIcon: 'assets/images/e621.net.png'),
+              BooruSiteTile(changeToPage: changeToSafeBooruPage, tileBackground: E621Theme.appBarColor, urlOfIcon: 'assets/images/safebooru.org.png'),
+            ],
+          ),
         ),
-      ),
-    );
+            ),
+      );
 
     return getMainPage();
   }
