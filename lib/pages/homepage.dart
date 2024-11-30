@@ -1,6 +1,6 @@
 import 'package:e621/e621.dart';
 import 'package:fange/pages/e621LoginPage.dart';
-import 'package:fange/pages/e621page.dart';
+import 'package:fange/pages/e621gallerypage.dart';
 import 'package:fange/preferences/preferences.dart';
 import 'package:fange/themes/e621theme.dart';
 import 'package:fange/widgets/buttons/boorusitetile.dart';
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       E621Client? client = clientTuple.$1;
 
       if (client != null) {
-        page = E621Page(client: client);
+        page = E621GalleryPage(client: client);
       }
       else {
         page = E621LoginPage(apiKey: apiKey, username: username);

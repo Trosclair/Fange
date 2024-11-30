@@ -2,6 +2,7 @@ import 'package:e621/e621.dart';
 import 'package:fange/pages/e621imagepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class PostPreviewButton extends StatelessWidget {
   final Post post;
@@ -102,7 +103,16 @@ class PostPreviewButton extends StatelessWidget {
     return gifOrWebm;
   }
 
-  void createImagePage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post)));
+  void createImagePage(BuildContext context) async {
+    Uri? url = post.file.url;
+
+    if (url != null) {
+      http.Response resp = await http.get(url);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post, mediaBytes: resp.bodyBytes)));
+    }
+    else {
+      /// Notify the user that their image is not home :3
+      toString();
+    }
   }
 }

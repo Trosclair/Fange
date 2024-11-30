@@ -1,5 +1,5 @@
 import 'package:e621/e621.dart';
-import 'package:fange/pages/e621page.dart';
+import 'package:fange/pages/e621gallerypage.dart';
 import 'package:fange/pages/homepage.dart';
 import 'package:fange/preferences/preferences.dart';
 import 'package:fange/themes/e621theme.dart';
@@ -91,7 +91,7 @@ class _E621LoginPageState extends State<E621LoginPage> {
         await Preferences.setE621APIKey(testClient.apiKey);
         await Preferences.setE621Username(testClient.login);
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => E621Page(client: testClient)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => E621GalleryPage(client: testClient)));
       }
       else {
         setState(() {

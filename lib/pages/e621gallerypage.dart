@@ -9,16 +9,16 @@ import 'package:http/http.dart';
 import 'package:fange/themes/e621theme.dart';
 import 'package:flutter/material.dart';
 
-class E621Page extends StatefulWidget {
+class E621GalleryPage extends StatefulWidget {
   final E621Client client;
 
-  const E621Page({super.key, required this.client});
+  const E621GalleryPage({super.key, required this.client});
 
   @override
-  State<E621Page> createState() => _E621PageState();
+  State<E621GalleryPage> createState() => _E621GalleryPageState();
 }
 
-class _E621PageState extends State<E621Page> {
+class _E621GalleryPageState extends State<E621GalleryPage> {
   int pageNumber = 1;
 
   final TextEditingController searchTextController = TextEditingController();
@@ -90,7 +90,7 @@ class _E621PageState extends State<E621Page> {
       List<Post>? posts;
 
       try {
-        posts = await widget.client?.posts.list(limit: 320, tags: tags, page: pageNumber);
+        posts = await widget.client.posts.list(limit: 320, tags: tags, page: pageNumber);
       } on ClientException catch (e) {
         scrollingError = e.message;
         return [];
@@ -107,12 +107,9 @@ class _E621PageState extends State<E621Page> {
         return [];
       }
 
-      if (posts != null) { /// Parallelize this later??
-        for (Post x in posts.where((y) => y.preview.url != null)) {
-          tempPostWidgets.add(PostPreviewButton(post: x));
-        }
+      for (Post x in posts.where((y) => y.preview.url != null)) {
+        tempPostWidgets.add(PostPreviewButton(post: x));
       }
-
     }
 
     return tempPostWidgets;
