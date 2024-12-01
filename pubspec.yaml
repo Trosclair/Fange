@@ -39,6 +39,7 @@ dependencies:
   http: ^1.2.2
   e621:
     path: "./submodules/e621"
+  intl: ^0.20.1
 
 dev_dependencies:
   flutter_test:

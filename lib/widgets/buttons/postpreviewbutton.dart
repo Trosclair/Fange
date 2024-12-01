@@ -1,5 +1,4 @@
 import 'package:e621/e621.dart';
-import 'package:e621/e621.dart';
 import 'package:fange/pages/e621imagepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
