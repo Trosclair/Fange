@@ -1,4 +1,5 @@
 import 'package:e621/e621.dart';
+import 'package:e621/e621.dart';
 import 'package:fange/pages/e621imagepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +107,8 @@ class PostPreviewButton extends StatelessWidget {
 
   void onPreviewClicked(BuildContext context) async {
     Widget img = const Placeholder();
-    Uri? url = post.file.url;
+    Uri? url = post.sample.url;
+    List<Comment> comments = [];
     try {
       if (url != null) {
         Future.delayed(const Duration(seconds: 1));
@@ -114,12 +116,14 @@ class PostPreviewButton extends StatelessWidget {
         http.Response resp = await http.get(url);
         img = Image(image: Image.memory(resp.bodyBytes).image);
 
-        
+        if (post.commentCount > 0) {
+          comments = await client.comments.list(commentGroupBy: CommentGroupBy.comment, postIds: [post.id]);
+        }
       }
     }
     on Exception catch (_) {
       img = const Text('Image failed to Load...', style: TextStyle(color: Colors.red));
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post, img: img,)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => E621ImagePage(post: post, img: img, comments: comments)));
   }
 }

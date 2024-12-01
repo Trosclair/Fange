@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 class E621ImagePage extends StatefulWidget {
   final Post post;
   final Widget img;
+  final List<Comment> comments;
 
-  const E621ImagePage({super.key, required this.post, required this.img});
+  const E621ImagePage({super.key, required this.post, required this.img, required this.comments});
 
   @override
   State<E621ImagePage> createState() => _E621ImagePageState();
